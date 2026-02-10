@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>宋志强医生接诊列表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        /* 顶部状态栏 */
+        .status-bar {
+            background-color: #007aff;
+            padding: 15px 20px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #fff;
+        }
+        
+        /* 导航栏 */
+        .nav-bar {
+            background-color: #007aff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            color: #fff;
+        }
+        
+        .nav-bar .back-btn {
+            font-size: 20px;
+        }
+        
+        .nav-bar .title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            background-color: #fff;
+            min-height: calc(100vh - 120px);
+            padding-bottom: 20px;
+        }
+        
+        /* 搜索框 */
+        .search-box {
+            padding: 15px 20px;
+            background-color: #f5f7fa;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #fff;
+            font-size: 14px;
+        }
+        
+        .search-input::placeholder {
+            color: #999;
+        }
+        
+        /* 接诊列表 */
+        .consultation-list {
+            padding: 0 20px;
+        }
+        
+        .consultation-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .consultation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .consultation-info {
+            margin-bottom: 10px;
+        }
+        
+        .consultation-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .patient-tag {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ff9500;
+        }
+        
+        .doctor-reply {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .consultation-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .consultation-stats {
+            display: flex;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部状态栏 -->
+    <div class="status-bar">
+        <div class="time">14:51</div>
+        <div class="icons">📶 📱 💯</div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="back-btn">←</div>
+        <div class="title">宋志强医生接诊列表</div>
+    </div>
+    
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <input type="text" class="search-input" placeholder="搜索疾病、症状等">
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 接诊列表 -->
+        <div class="consultation-list">
+            <!-- 接诊项1 -->
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        胃肠功能紊乱胃食管反流
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：好好调整 务必放松 祝早日康复！
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>扫码报到</span>
+                            <span>总交流:6次</span>
+                            <span>医生回复:5次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 接诊项2 -->
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        胃肠功能紊乱.小肠检查
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：好好调整 务必放松 祝早日康复！
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>扫码报到</span>
+                            <span>总交流:7次</span>
+                            <span>医生回复:6次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 接诊项3 -->
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        息肉 胃肠功能紊乱 萎缩性胃炎
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：好好调整 务必放松 祝早日康复！
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>扫码报到</span>
+                            <span>总交流:12次</span>
+                            <span>医生回复:11次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 接诊项4 -->
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        幽门螺杆菌感染；
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：好好调整 务必放松 祝早日康复！
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>扫码报到</span>
+                            <span>总交流:3次</span>
+                            <span>医生回复:2次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 接诊项5 -->
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        慢性萎缩性胃炎 胃肠功能紊乱
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：好好调整 务必放松 祝早日康复！
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>扫码报到</span>
+                            <span>总交流:10次</span>
+                            <span>医生回复:9次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 接诊项6 -->
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        胃肠功能紊乱 ca724升高
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：好好调整 务必放松 祝早日康复！
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>扫码报到</span>
+                            <span>总交流:9次</span>
+                            <span>医生回复:8次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 接诊项7 -->
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        胃肠功能紊乱
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：好好调整 务必放松 祝早日康复！
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>扫码报到</span>
+                            <span>总交流:6次</span>
+                            <span>医生回复:5次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 返回按钮点击事件
+        document.querySelector('.back-btn').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
