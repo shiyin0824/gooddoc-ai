@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>宋志强医生接诊列表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        /* 顶部状态栏 */
+        .status-bar {
+            background-color: #007aff;
+            padding: 15px 20px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #fff;
+        }
+        
+        /* 导航栏 */
+        .nav-bar {
+            background-color: #007aff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            color: #fff;
+        }
+        
+        .nav-bar .back-btn {
+            font-size: 20px;
+        }
+        
+        .nav-bar .title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            background-color: #fff;
+            min-height: calc(100vh - 120px);
+            padding-bottom: 20px;
+        }
+        
+        /* 搜索框 */
+        .search-box {
+            padding: 15px 20px;
+            background-color: #f5f7fa;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #fff;
+            font-size: 14px;
+        }
+        
+        .search-input::placeholder {
+            color: #999;
+        }
+        
+        /* 接诊列表 */
+        .consultation-list {
+            padding: 0 20px;
+        }
+        
+        .consultation-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .consultation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .consultation-info {
+            margin-bottom: 10px;
+        }
+        
+        .consultation-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .patient-tag {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ff9500;
+        }
+        
+        .doctor-reply {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .consultation-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .consultation-stats {
+            display: flex;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部状态栏 -->
+    <div class="status-bar">
+        <div class="time">14:51</div>
+        <div class="icons">📶 📱 💯</div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="back-btn">←</div>
+        <div class="title">宋志强医生接诊列表</div>
+    </div>
+    
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <input type="text" class="search-input" placeholder="搜索疾病、症状等">
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 接诊列表 -->
+        <div class="consultation-list">
+            <!-- 今天的问诊记录 -->
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        腹胀，三个月前胃酸吃雷贝拉唑5天不见效换吃伏诺拉生3天，开始...
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：此对话涉及隐私内容仅患者本人和医...
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>图文问诊</span>
+                            <span>总交流:22次</span>
+                            <span>医生回复:13次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item" onclick="window.location.href='consultation-detail.html'">
+                <div class="consultation-info" style="cursor: pointer;">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        教授好，2023年1月份查出有萎缩性胃炎伴肠化，幽门螺杆菌感...<span style="color: red; margin-left: 8px;">【可点击】</span>
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：查看详情
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>图文问诊</span>
+                            <span>总交流:36次</span>
+                            <span>医生回复:19次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        胃息肉切除，慢性非萎缩性胃炎 胃疼加腹痛这个病持续了三周，1月26号和29号，分别都...
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：[生活医嘱]...
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>电话问诊</span>
+                            <span>总交流:12次</span>
+                            <span>医生回复:9次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        教授好，我家孩子13周岁半，经常肚疼，之前查过说肠系淋巴结发...
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：[语音 10s]
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>图文问诊</span>
+                            <span>总交流:29次</span>
+                            <span>医生回复:21次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        幽门螺杆菌感染，(多)全耐药，因幽门螺杆菌耐药(19年也服过阿莫仙，福利布汀)，也没根...
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：祝顺利
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>图文问诊</span>
+                            <span>总交流:26次</span>
+                            <span>医生回复:15次</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        看胃镜报告
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：[生活医嘱]...
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>图文问诊</span>
+                        </div>
+                        <span>今天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 昨天的问诊记录 -->
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        消化内科
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：[生活医嘱]...
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>图文问诊</span>
+                            <span>总交流:54次</span>
+                            <span>医生回复:23次</span>
+                        </div>
+                        <span>昨天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        老年人消化不好，经常便秘 75岁，常年便秘，近两年严重，...
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：[处方]...
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>图文问诊</span>
+                            <span>总交流:28次</span>
+                            <span>医生回复:17次</span>
+                        </div>
+                        <span>昨天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        萎缩性胃炎 遵照医嘱服药后胃疼缓解。目前肚子里面每天好像有股气咕噜噜转动...请问现在...
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：[生活医嘱]...
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>图文问诊</span>
+                            <span>总交流:26次</span>
+                            <span>医生回复:15次</span>
+                        </div>
+                        <span>昨天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        肠胃不舒服 检查...
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：[处方]...
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>图文问诊</span>
+                            <span>总交流:65次</span>
+                            <span>医生回复:30次</span>
+                        </div>
+                        <span>昨天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        反复腹泻，一拉肚子就出虚汗，吃肠炎宁缓解 一拉肚子就冒虚汗，反复腹泻，以前一年有1...
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：[生活医嘱]...
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>电话问诊</span>
+                            <span>总交流:9次</span>
+                            <span>医生回复:7次</span>
+                        </div>
+                        <span>昨天</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="consultation-item">
+                <div class="consultation-info">
+                    <div class="consultation-title">
+                        <span class="patient-tag"></span>
+                        胃胀气 反复呕吐 吃不下东西 40天内反复四次疯狂呕吐，每次长达一周，中间好一天，又呕...
+                    </div>
+                    <div class="doctor-reply">
+                        宋志强：[生活医嘱]...
+                    </div>
+                    <div class="consultation-meta">
+                        <div class="consultation-stats">
+                            <span>电话问诊</span>
+                            <span>总交流:8次</span>
+                            <span>医生回复:7次</span>
+                        </div>
+                        <span>2月12日</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 返回按钮点击事件
+        document.querySelector('.back-btn').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

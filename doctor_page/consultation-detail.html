@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>诊疗详情</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        /* 顶部状态栏 */
+        .status-bar {
+            background-color: #007aff;
+            padding: 15px 20px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #fff;
+        }
+        
+        /* 导航栏 */
+        .nav-bar {
+            background-color: #007aff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            color: #fff;
+        }
+        
+        .nav-bar .back-btn {
+            font-size: 20px;
+        }
+        
+        .nav-bar .title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .nav-bar .share-btn {
+            font-size: 16px;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            background-color: #fff;
+            min-height: calc(100vh - 120px);
+        }
+        
+        /* 标题区 */
+        .case-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .case-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .case-meta {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* 标签栏 */
+        .tab-bar {
+            display: flex;
+            border-bottom: 1px solid #f0f0f0;
+            background-color: #fff;
+        }
+        
+        .tab-item {
+            flex: 1;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+        }
+        
+        .tab-item.active {
+            color: #007aff;
+            font-weight: 500;
+        }
+        
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background-color: #007aff;
+        }
+        
+        /* 病例信息 */
+        .case-info {
+            padding: 20px;
+            background-color: #fff;
+        }
+        
+        .info-section {
+            margin-bottom: 20px;
+        }
+        
+        .info-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .info-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .info-content p {
+            margin-bottom: 12px;
+        }
+        
+        /* 医患交流 */
+        .chat-container {
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        
+        .chat-item {
+            margin-bottom: 20px;
+        }
+        
+        .chat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .chat-time {
+            margin-right: 10px;
+        }
+        
+        .chat-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .chat-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .chat-content {
+            background-color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-left: 46px;
+        }
+        
+        .chat-content.gray {
+            background-color: #f0f0f0;
+        }
+        
+        .chat-content.blue {
+            background-color: #e6f3ff;
+        }
+        
+        .voice-message {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+        }
+        
+        .voice-duration {
+            margin-left: 8px;
+            color: #666;
+        }
+        
+        .transcription-note {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+            font-style: italic;
+        }
+        
+        /* 底部帮助区 */
+        .help-section {
+            padding: 15px 20px;
+            background-color: #fff;
+            border-top: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .help-link {
+            color: #007aff;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        
+        /* 医生信息 */
+        .doctor-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background-color: #fff;
+        }
+        
+        .doctor-details {
+            display: flex;
+            align-items: center;
+        }
+        
+        .doctor-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+        
+        .doctor-info-text {
+            flex: 1;
+        }
+        
+        .doctor-name {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .doctor-hospital {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .doctor-btn {
+            background-color: #007aff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* 患者消息样式 */
+        .patient-chat {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .patient-chat .chat-header {
+            justify-content: flex-end;
+        }
+        
+        .patient-chat .chat-content {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部状态栏 -->
+    <div class="status-bar">
+        <div class="time">23:58</div>
+        <div class="icons">📶 📱 💯</div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="back-btn" onclick="window.location.href='consultation-list.html'">←</div>
+        <div class="title">诊疗详情</div>
+        <div class="share-btn">↗</div>
+    </div>
+    
+    <!-- 标题区 -->
+    <div class="case-header">
+        <div class="case-title">教授好，2023年1月份查出有萎缩性胃炎伴肠化，幽门螺杆菌感...-图文问诊</div>
+    </div>
+    
+    <!-- 标签栏 -->
+    <div class="tab-bar">
+        <div class="tab-item active">病例信息</div>
+        <div class="tab-item">医患交流</div>
+        <div class="tab-item">分享文章</div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 病例信息 -->
+        <div class="case-info">
+            <div class="info-section">
+                <div class="info-title">病例信息</div>
+                <div class="info-content">
+                    <p><strong>h*** 女 50+岁</strong></p>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-title">疾病描述：</div>
+                <div class="info-content">
+                    <p>教授好，2023年1月份查出有萎缩性胃炎伴肠化，幽门螺杆菌感染，随后用了四联药（用药图片我上传在后面）用完后呼气检查转阴，半年后呼气检测还是阴性，2024年2月份胃镜检查，幽门螺杆菌还是有。当时问诊了宋教授，教师诊断不需要用药，至今没有用杀菌药。</p>
+                    
+                    <p>胃里老感觉酸，酸的厉害，每天都有，期间用过2周药（雷贝拉唑钠肠溶片和替普瑞酮胶囊）用药期间没有症状，药停后又开始反复，胃镜检查有胆汁反流。</p>
+                    
+                    <p>2024～2025年底没有做胃镜检查，期间还是一直胃里酸，不返，下午和晚上症状加重，有时用奥美拉唑和铝碳酸镁，近期2026年2月份做了胃镜，情况加重，还是萎缩肠化，胆汁反流增加有糜烂，病检有低级内瘤变，</p>
+                    
+                    <p>没有就诊本地医生，想麻烦教授就诊开药，看是否需要做手术。</p>
+                    
+                    <p>2025年做过肠镜，有息肉，做了内镜切除（2026-02填写）</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 医患交流 -->
+        <div class="chat-container">
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">昨天</span>
+                </div>
+                <div class="chat-content gray">
+                    隐私内容，仅患者本人和医生可见
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">昨天</span>
+                </div>
+                <div class="chat-content gray">
+                    宋志强医生将为您提供专业服务<br>
+                    线上问诊不能代替面诊，问诊中医生回复仅供参考
+                </div>
+            </div>
+            
+            <div class="chat-item patient-chat">
+                <div class="chat-header">
+                    <span class="chat-time">昨天</span>
+                    <span class="chat-name">患者</span>
+                </div>
+                <div class="chat-content blue">
+                    隐私内容，仅患者本人和医生可见
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">昨天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <div class="voice-message">
+                        <span>🎵</span>
+                        <span class="voice-duration">9"</span>
+                    </div>
+                    <p>你好，呃，我想问一下，你现在幽门螺杆菌应该是没有了，对不对？这点是明确的吧？</p>
+                    <p class="transcription-note">以上文字由机器转写，仅供参考</p>
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">昨天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <div class="voice-message">
+                        <span>🎵</span>
+                        <span class="voice-duration">8"</span>
+                    </div>
+                    <p>这次你问诊的主要目的是因为你在当地做了胃镜，提示有低级别流变，对吧？</p>
+                    <p class="transcription-note">以上文字由机器转写，仅供参考</p>
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">昨天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <div class="voice-message">
+                        <span>🎵</span>
+                        <span class="voice-duration">4"</span>
+                    </div>
+                    <p>您是想问我一下这个怎么处理，是这样吗？</p>
+                    <p class="transcription-note">以上文字由机器转写，仅供参考</p>
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">昨天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <div class="voice-message">
+                        <span>🎵</span>
+                        <span class="voice-duration">9"</span>
+                    </div>
+                    <p>还有一点就是平时好像还是有点不舒服，胃酸对吧。对，但是吃间断的吃点这个雷贝拉唑也能好。</p>
+                    <p class="transcription-note">以上文字由机器转写，仅供参考</p>
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">昨天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <div class="voice-message">
+                        <span>🎵</span>
+                        <span class="voice-duration">19"</span>
+                    </div>
+                    <p>对回答一下上面我问你的问题，要不知道都都不知道你的咨询目的是什么。对，第二个就是这个抽血的抗体没意义的，你杀过菌了，这个抗体是没有价值的，要靠呼气来决定到底有没有幽门螺杆菌。</p>
+                    <p class="transcription-note">以上文字由机器转写，仅供参考</p>
+                </div>
+            </div>
+            
+            <div class="chat-item patient-chat">
+                <div class="chat-header">
+                    <span class="chat-name">患者</span>
+                    <span class="chat-time">昨天</span>
+                </div>
+                <div class="chat-content blue">
+                    教授，才看到信息，这次这个幽门螺杆菌是胃镜后3天才做的，不知道数据是否准确，想麻烦教授针对这次的检查结果治疗开药，或者需要怎么处理
+                </div>
+            </div>
+            
+            <div class="chat-item patient-chat">
+                <div class="chat-header">
+                    <span class="chat-name">患者</span>
+                    <span class="chat-time">昨天</span>
+                </div>
+                <div class="chat-content blue">
+                    主要原来萎缩肠化，现在又多了糜烂和低级内瘤变，该吃什么药怎样控制
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">今天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <div class="voice-message">
+                        <span>🎵</span>
+                        <span class="voice-duration">10"</span>
+                    </div>
+                    <p>呼气的幽门，呃，幽门螺杆菌比较准，你这个抽血的不准，所以我是觉得不放心。要不要去做个呼气实验，确认一下幽门螺杆菌？</p>
+                    <p class="transcription-note">以上文字由机器转写，仅供参考</p>
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">今天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <div class="voice-message">
+                        <span>🎵</span>
+                        <span class="voice-duration">47"</span>
+                    </div>
+                    <p>从这个病理来看，其实没什么大事儿。轻度的萎缩肠化，只要把好习惯做好，没有细菌就够了。而且，这个病理不太支持有幽门螺杆菌。呃，如果实在不放心，你可以买点胃复春或者摩罗丹一个药啊，吃两三个月保护一下胃黏膜。至于你那个轻度的不典型增生，或者叫上皮内瘤变，这个有点奇怪，一般这种都是在比较重的萎缩肠化的背景下，才有意义。你的背景，他太轻了我觉得可能是病理做有点轻的太大有。我经常碰到这种情况，背景还可以，就报了个这个。这种一般跟癌前病变的关系不大，更多的是细胞形态单纯的改变。</p>
+                    <p class="transcription-note">以上文字由机器转写，仅供参考</p>
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">今天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <div class="voice-message">
+                        <span>🎵</span>
+                        <span class="voice-duration">27"</span>
+                    </div>
+                    <p>这种呢，就过一年以后就能不能到一个更正规的医院去做一下，因为一般正规的要多点活检，而且评价的比较标准，比如说你有机会到我们这儿可以去提前给我联系，然后到这儿做一个评估好一点，或者你不方便周围有更好的三甲医院，按照标准的取三四周更快，病理也很规范，再评估一下，我还是觉得这个意义不大。</p>
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">今天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <h4 style="margin-bottom: 12px; font-size: 16px; font-weight: 500;">分享文章</h4>
+                    <div style="background-color: #f9f9f9; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                        <p style="margin-bottom: 8px;">医生分享了一篇文章《〈医语道破〉腾讯视频 萎缩性胃炎意味着胃癌就要来了吗？宋志强教授 2021-12-21》</p>
+                        <button style="background-color: #007aff; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 14px; cursor: pointer;">立即查看</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">今天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <h4 style="margin-bottom: 12px; font-size: 16px; font-weight: 500;">分享文章</h4>
+                    <div style="background-color: #f9f9f9; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                        <p style="margin-bottom: 8px;">医生分享了一篇文章《萎缩性胃炎和肠化生：如何正确处理不变胃癌》</p>
+                        <button style="background-color: #007aff; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 14px; cursor: pointer;">立即查看</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-item">
+                <div class="chat-header">
+                    <span class="chat-time">今天</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23e0e0e0'/%3E%3Ctext x='18' y='22' font-size='16' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="chat-avatar">
+                    <span class="chat-name">宋志强 主任医师</span>
+                </div>
+                <div class="chat-content">
+                    <h4 style="margin-bottom: 12px; font-size: 16px; font-weight: 500;">分享文章</h4>
+                    <div style="background-color: #f9f9f9; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                        <p style="margin-bottom: 8px;">医生分享了一篇文章《〈人民名医〉萎缩性胃炎会发展成胃癌吗？宋志强教授 2021-7-21》</p>
+                        <button style="background-color: #007aff; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 14px; cursor: pointer;">立即查看</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部帮助区 -->
+        <div class="help-section">
+            <a href="#" class="help-link">向相似病情的患友求助 ></a>
+        </div>
+        
+        <!-- 医生信息 -->
+        <div class="doctor-info">
+            <div class="doctor-details">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'%3E%3Ccircle cx='25' cy='25' r='25' fill='%23e0e0e0'/%3E%3Ctext x='25' y='30' font-size='20' text-anchor='middle' fill='%23999'%3E👨‍⚕️%3C/text%3E%3C/svg%3E" alt="医生" class="doctor-avatar">
+                <div class="doctor-info-text">
+                    <div class="doctor-name">宋志强 主任医师 教授</div>
+                    <div class="doctor-hospital">北医三院 消化科</div>
+                </div>
+            </div>
+            <button class="doctor-btn">了解医生</button>
+        </div>
+    </div>
+    
+    <script>
+        // 标签切换功能
+        document.querySelectorAll('.tab-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

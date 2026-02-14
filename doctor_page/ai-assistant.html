@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>医生AI助理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        /* 顶部状态栏 */
+        .status-bar {
+            background-color: #e6f3ff;
+            padding: 15px 20px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .status-bar .time {
+            font-weight: 500;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* 导航栏 */
+        .nav-bar {
+            background-color: #e6f3ff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-bar .back-btn {
+            font-size: 20px;
+        }
+        
+        .nav-bar .title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            background-color: #e6f3ff;
+            min-height: calc(100vh - 120px);
+            padding-bottom: 20px;
+        }
+        
+        /* 医生信息卡片 */
+        .doctor-card {
+            background-color: #fff;
+            border-radius: 16px;
+            margin: -10px 20px 20px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+        
+        .doctor-avatar {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .doctor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .doctor-info {
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        .doctor-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .doctor-name .ai-tag {
+            display: inline-block;
+            background-color: #4a90e2;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        
+        .doctor-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .doctor-hospital {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .hospital-tags {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .hospital-tag {
+            display: inline-block;
+            background-color: #f0f0f0;
+            color: #666;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        /* 标签栏 */
+        .tab-bar {
+            display: flex;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 15px;
+        }
+        
+        .tab-item {
+            flex: 1;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+        }
+        
+        .tab-item.active {
+            color: #4a90e2;
+            font-weight: 500;
+        }
+        
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background-color: #4a90e2;
+            border-radius: 1px;
+        }
+        
+        /* 专业擅长内容 */
+        .expertise-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .more-info {
+            display: block;
+            text-align: center;
+            font-size: 14px;
+            color: #4a90e2;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        
+        /* 聊天容器 */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        /* 对话气泡 */
+        .chat-bubble {
+            margin-bottom: 20px;
+            max-width: 90%;
+        }
+        
+        .user-bubble {
+            align-self: flex-end;
+        }
+        
+        .ai-bubble {
+            align-self: flex-start;
+            width: 100%;
+        }
+        
+        .bubble-content {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .user-bubble .bubble-content {
+            background-color: #4a90e2;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+        
+        /* 知识库调用部分 */
+        .knowledge-base-section {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .knowledge-base-header {
+            margin-bottom: 12px;
+        }
+        
+        .knowledge-base-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-right: 8px;
+        }
+        
+        .knowledge-base-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .knowledge-base-content {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .knowledge-source {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .source-icon {
+            margin-right: 8px;
+        }
+        
+        .source-text {
+            color: #666;
+        }
+        
+        .article-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #4a90e2;
+        }
+        
+        .article-title {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .article-tag {
+            font-size: 12px;
+            color: #4a90e2;
+            background-color: #e6f3ff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-right: 8px;
+        }
+        
+        .expand-btn {
+            margin: 8px 0 0 0;
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        /* 回答内容 */
+        .answer-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .answer-content h4 {
+            margin: 16px 0 8px 0;
+            font-size: 15px;
+            color: #333;
+        }
+        
+        .answer-content ul {
+            margin: 8px 0 16px 0;
+            padding-left: 20px;
+        }
+        
+        .answer-content li {
+            margin-bottom: 8px;
+        }
+        
+        /* 相似病例 */
+        .similar-cases {
+            margin-bottom: 16px;
+        }
+        
+        .case-item {
+            display: flex;
+            align-items: flex-start;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .case-avatar {
+            font-size: 24px;
+            margin-right: 12px;
+        }
+        
+        .case-content {
+            flex: 1;
+        }
+        
+        .case-title {
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .case-hospital {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 相关问题 */
+        .related-questions {
+            margin-bottom: 16px;
+        }
+        
+        .related-question-item {
+            padding: 10px 14px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .related-question-item:hover {
+            background-color: #e6f3ff;
+        }
+        
+        /* 免责声明 */
+        .disclaimer {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        
+        /* AI助手区域 */
+        .ai-assistant-section {
+            background-color: #fff;
+            border-radius: 16px;
+            margin: 0 20px 20px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .ai-greeting {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        /* 快速问题 */
+        .quick-questions {
+            margin-bottom: 20px;
+        }
+        
+        .quick-question-item {
+            padding: 12px 16px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-question-item:hover {
+            background-color: #f0f7ff;
+            border-color: #4a90e2;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.1);
+        }
+        
+
+        
+        /* 报告解读按钮 */
+        .report-btn {
+            display: block;
+            background-color: #e6f3ff;
+            color: #4a90e2;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .report-btn:hover {
+            background-color: #d6e9ff;
+        }
+        
+        /* 输入框区域 */
+        .input-section {
+            background-color: #fff;
+            border-radius: 16px;
+            margin: 0 20px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-box {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            padding: 10px;
+            background-color: #f5f7fa;
+            border-radius: 20px;
+        }
+        
+        .input-box::placeholder {
+            color: #999;
+        }
+        
+        .add-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #4a90e2;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        /* 底部空间 */
+        .bottom-space {
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部状态栏 -->
+    <div class="status-bar">
+        <div class="time">18:11</div>
+        <div class="icons">📶 📱 💬</div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="back-btn">←</div>
+        <div class="title">宋志强医生</div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content" style="display: flex; flex-direction: column; min-height: calc(100vh - 120px);">
+        <!-- 医生信息卡片 -->
+        <div class="doctor-card">
+            <div class="doctor-info">
+                <div class="doctor-name">宋志强医生 <span class="ai-tag">AI</span></div>
+                <div class="doctor-title">消化科 | 主任医师</div>
+                <div class="doctor-hospital">北京大学第三医院</div>
+                <div class="hospital-tags">
+                    <span class="hospital-tag">三甲</span>
+                    <span class="hospital-tag">复旦top100</span>
+                </div>
+            </div>
+            
+            <!-- 标签栏 -->
+            <div class="tab-bar">
+                <div class="tab-item active">专业擅长</div>
+                <div class="tab-item">个人简介</div>
+                <div class="tab-item">科研成果</div>
+            </div>
+            
+            <!-- 专业擅长内容 -->
+            <div class="expertise-content">
+                各种消化道疾病及疑难杂症：尤其是幽门螺杆菌感染、慢性萎缩性胃炎和肠化、功能性胃肠病、胃肠...</div>
+            
+            <!-- 查看更多信息 -->
+            <a href="#" class="more-info">去宋志强医生主页查看更多信息 ></a>
+        </div>
+        
+        <!-- 聊天容器 -->
+        <div class="chat-container">
+            <!-- 对话内容将通过JavaScript动态添加 -->
+        </div>
+        
+        <!-- AI助手区域 -->
+        <div class="ai-assistant-section">
+            <div class="ai-greeting">我是宋志强医生AI分身，有问题直接问我吧～</div>
+            
+            <!-- 快速问题 -->
+            <div class="quick-questions">
+                <div class="quick-question-item">如何诊断功能性胃肠病？<span style="color: red; margin-left: 8px;">【可点击】</span></div>
+                <div class="quick-question-item">功能性胃肠病治疗方法？</div>
+                <div class="quick-question-item">治疗慢性萎缩性胃炎方法？<span style="color: red; margin-left: 8px;">【可点击】</span></div>
+            </div>
+            
+            <!-- 换一批按钮 -->
+            
+            
+            <!-- 报告解读按钮 -->
+            <div class="report-btn">📄 报告解读</div>
+            
+            <!-- 输入框区域 -->
+            <div class="input-section">
+                <input type="text" class="input-box" placeholder="健康问题尽管问我">
+                <div class="add-btn">+</div>
+            </div>
+        </div>
+        
+        <!-- 底部空间 -->
+        <div class="bottom-space"></div>
+    </div>
+    
+    <script>
+        // 返回按钮点击事件
+        document.querySelector('.back-btn').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+        
+        // 标签切换
+        const tabItems = document.querySelectorAll('.tab-item');
+        tabItems.forEach(item => {
+            item.addEventListener('click', function() {
+                tabItems.forEach(tab => tab.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // 快速问题点击事件
+        document.querySelectorAll('.quick-question-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                const question = this.textContent.replace('【可点击】', '').trim();
+                if (question === '治疗慢性萎缩性胃炎方法？') {
+                    // 显示对话内容
+                    const chatContent = `
+                        <div class="chat-bubble user-bubble">
+                            <div class="bubble-content">${question}</div>
+                        </div>
+                        <div class="chat-bubble ai-bubble">
+                            <div class="knowledge-base-section">
+                                <div class="knowledge-base-header">
+                                    <span class="knowledge-base-title">知识库调用</span>
+                                    <span class="knowledge-base-subtitle">聚合医学知识与必要信息</span>
+                                </div>
+                                <div class="knowledge-base-content">
+                                    <div class="knowledge-source">
+                                        <span class="source-icon">📚</span>
+                                        <span class="source-text">调用 宋志强医生知识库 1 2 3 ...</span>
+                                    </div>
+                                    <div class="article-card">
+                                        <p class="article-title">这些常见胃病很苦恼？专家谈如何科...</p>
+                                        <span class="article-tag">科普文章</span>
+                                        <p class="expand-btn">展开全部4篇资料 ↓</p>
+                                    </div>
+                                    <div class="knowledge-source">
+                                        <span class="source-icon">📑</span>
+                                        <span class="source-text">根据医学专业文献分析</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="answer-content">
+                                <p>治疗慢性萎缩性胃炎需要采取综合措施，重点在于控制病情发展、改善症状并定期监测。</p>
+                                <h4>核心治疗方向包括：</h4>
+                                <ul>
+                                    <li><strong>根除幽门螺杆菌：</strong>若检测阳性，规范根除治疗是阻止萎缩进展的关键措施，需在医生指导下完成。</li>
+                                    <li><strong>保护胃黏膜：</strong>重度萎缩可短期使用胃黏膜保护剂，但需避免长期过度用药反而损伤黏膜。</li>
+                                    <li><strong>调整生活方式：</strong>饮食多摄入新鲜蔬果（富含维生素），严格避免腌制、熏烤类含亚硝酸盐食物；规律进食、细嚼慢咽。</li>
+                                    <li><strong>合理复查：</strong>根据萎缩程度制定胃镜复查频率，轻中度通常2-3年一次，重度可能需缩短间隔，具体遵循医嘱。</li>
+                                </ul>
+                                <h4>注意事项：</h4>
+                                <p>萎缩伴肠化是癌前病变，但轻度病变癌变风险极低。治疗目标并非完全"逆转"，而是阻断进展。中药或中成药需在医生评估后使用，不可自行滥用。</p>
+                                <p>若伴有胃胀、便秘等功能性症状，可结合饮食调理（少食多餐、避免辛辣刺激）及适度运动协同改善。所有用药需经线下医生面诊后决定。</p>
+                            </div>
+                            <div class="similar-cases">
+                                <div class="case-item">
+                                    <div class="case-avatar">👨‍⚕️</div>
+                                    <div class="case-content">
+                                        <p class="case-title">胃角重度肠化加中度萎缩性胃炎伴随糜烂该...</p>
+                                        <p class="case-hospital">北京大学第三医院 | 宋志强</p>
+                                    </div>
+                                </div>
+                                <div class="case-item">
+                                    <div class="case-avatar">👨‍⚕️</div>
+                                    <div class="case-content">
+                                        <p class="case-title">64岁男性萎缩性胃炎治疗咨询</p>
+                                        <p class="case-hospital">北京大学第三医院 | 宋志强 主任医师</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="related-questions">
+                                <div class="related-question-item">慢性萎缩性胃炎能逆转吗？</div>
+                                <div class="related-question-item">胃镜检查能发现什么问题？</div>
+                                <div class="related-question-item">饮食如何影响胃黏膜健康？</div>
+                            </div>
+                            <div class="disclaimer">
+                                <p>内容由AI生成，非诊疗意见，不适请及时就医</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // 清空现有对话并添加新内容
+                    const chatContainer = document.querySelector('.chat-container');
+                    chatContainer.innerHTML = chatContent;
+                    
+                    // 滚动到底部
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                } else if (question === '如何诊断功能性胃肠病？') {
+                    // 显示完整的对话内容
+                    const chatContent = `
+                        <div class="chat-bubble user-bubble">
+                            <div class="bubble-content">近期肠胃不适，出现腹痛、恶心症状，可能是什么原因？</div>
+                        </div>
+                        <div class="chat-bubble ai-bubble">
+                            <div class="bubble-content" style="background-color: #f0f0f0; color: #333; border-bottom-left-radius: 4px;">请问您的腹痛和恶心症状持续了多长时间？</div>
+                        </div>
+                        <div class="chat-bubble user-bubble">
+                            <div class="bubble-content">刚开始两三天</div>
+                        </div>
+                        <div class="chat-bubble ai-bubble">
+                            <div class="bubble-content" style="background-color: #f0f0f0; color: #333; border-bottom-left-radius: 4px;">除了腹痛和恶心，您是否还伴有腹泻、便秘、发热或体重下降等其他症状？</div>
+                        </div>
+                        <div class="chat-bubble user-bubble">
+                            <div class="bubble-content">有腹泻</div>
+                        </div>
+                        <div class="chat-bubble ai-bubble">
+                            <div class="bubble-content" style="background-color: #f0f0f0; color: #333; border-bottom-left-radius: 4px;">根据您描述的腹痛、恶心和腹泻症状，这种情况在临床上比较常见。从功能性胃肠病的角度分析，可能是肠道功能紊乱引起的肠易激综合征表现。建议您先观察症状变化，注意休息和饮食调理。如果症状持续或加重，建议及时就医进行相关检查排除器质性疾病。</div>
+                        </div>
+                        <div class="chat-bubble ai-bubble">
+                            <div class="bubble-content" style="background-color: #f0f0f0; color: #333; border-bottom-left-radius: 4px;">请问您的腹泻是每天几次？大便的性状如何，是稀水样、糊状还是带有黏液或血？</div>
+                        </div>
+                        <div class="chat-bubble user-bubble">
+                            <div class="bubble-content">每天2-3次</div>
+                        </div>
+                        <div class="chat-bubble ai-bubble">
+                            <div class="knowledge-base-section">
+                                <div class="knowledge-base-header">
+                                    <span class="knowledge-base-title">知识库调用</span>
+                                    <span class="knowledge-base-subtitle">聚合医学知识与必要信息</span>
+                                </div>
+                                <div class="knowledge-base-content">
+                                    <div class="knowledge-source">
+                                        <span class="source-icon">📚</span>
+                                        <span class="source-text">调用 宋志强医生知识库 1 2 3</span>
+                                    </div>
+                                    <div class="article-card">
+                                        <p class="article-title">不明原因的腹痛、腹泻，可能是哪些...</p>
+                                        <span class="article-tag">科普文章</span>
+                                        <p class="expand-btn">展开全部3篇资料 ↓</p>
+                                    </div>
+                                    <div class="knowledge-source">
+                                        <span class="source-icon">📑</span>
+                                        <span class="source-text">根据医学专业文献分析</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="answer-content">
+                                <p>根据您描述的每天2-3次腹泻，结合腹痛、恶心症状，这种情况很可能是急性胃肠炎或肠道功能紊乱。</p>
+                                <h4>可能的原因分析：</h4>
+                                <ul>
+                                    <li><strong>急性胃肠炎：</strong>多由饮食不当或感染引起，表现为短期内的腹泻、腹痛、恶心</li>
+                                    <li><strong>肠易激综合征：</strong>若症状反复出现，可能与肠道敏感性增高有关</li>
+                                    <li><strong>功能性消化不良：</strong>胃肠动力异常导致的症状</li>
+                                </ul>
+                                <h4>建议措施：</h4>
+                                <ul>
+                                    <li><strong>暂时选择清淡易消化的饮食，避免辛辣、油腻食物</strong></li>
+                                    <li><strong>注意补充水分，防止脱水</strong></li>
+                                    <li><strong>观察症状变化，若持续超过一周或出现发热、便血等报警症状，建议及时就医检查</strong></li>
+                                    <li><strong>医生可能会建议进行大便常规、血常规等检查排除感染因素</strong></li>
+                                </ul>
+                                <p>症状持续时间较短，多数情况下通过适当休息和饮食调整可以缓解。</p>
+                            </div>
+                            <div class="case-item" style="background-color: #f9f9f9; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                                <a href="#" style="text-decoration: none; color: #4a90e2;">文章 不明原因的腹痛腹泻，可能是哪些疾病所致？</a>
+                                <p style="font-size: 12px; color: #666; margin: 4px 0 0 0;">北京大学第三医院 | 宋志强</p>
+                            </div>
+                            <div class="disclaimer">
+                                <p>内容由AI生成，非诊疗意见，不适请及时就医</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // 清空现有对话并添加新内容
+                    const chatContainer = document.querySelector('.chat-container');
+                    chatContainer.innerHTML = chatContent;
+                    
+                    // 滚动到底部
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                } else {
+                    document.querySelector('.input-box').value = question;
+                    alert('已填充问题: ' + question);
+                }
+            });
+        });
+        
+
+        
+        // 报告解读按钮点击事件
+        document.querySelector('.report-btn').addEventListener('click', function() {
+            // 这里可以添加报告解读的逻辑
+            alert('报告解读');
+        });
+        
+        // 添加按钮点击事件
+        document.querySelector('.add-btn').addEventListener('click', function() {
+            const question = document.querySelector('.input-box').value;
+            if (question) {
+                // 这里可以添加发送问题的逻辑
+                alert('发送问题：' + question);
+                document.querySelector('.input-box').value = '';
+            }
+        });
+    </script>
+</body>
+</html>
